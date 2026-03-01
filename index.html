@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lets pelataan!</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>Lets pelataan!</h1>
+      <p id="description" hidden></p>
+    </header>
+
+    <div id="error-message" hidden></div>
+
+    <main>
+      <div id="pyramid"></div>
+    </main>
+
+    <div id="controls">
+      <div id="hint-message" hidden></div>
+      <div id="mistakes"></div>
+      <button id="submit-btn" disabled>Tarkista</button>
+      <div id="end-message" hidden></div>
+    </div>
+
+    <img id="me-photo" src="./winx.png" alt="">
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

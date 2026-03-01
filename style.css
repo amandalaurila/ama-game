@@ -1,0 +1,301 @@
+/* ── Variables ──────────────────────────────────── */
+:root {
+  --bg: #f8f7f4;
+  --tile-bg: #ffffff;
+  --tile-border: #d0cdc8;
+  --tile-selected-bg: #1a1a2e;
+  --tile-selected-text: #ffffff;
+  --text: #2c2c2c;
+  --muted: #888;
+  --gap: 7px;
+  --tile-w: clamp(52px, calc((100vw - 80px) / 5 - 7px), 94px);
+  --radius: 8px;
+  --font: system-ui, -apple-system, sans-serif;
+}
+
+/* ── Reset & Base ───────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: url('./background.jpeg') center / cover fixed var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  min-height: 100dvh;
+  display: flex;
+  justify-content: center;
+  padding: 24px 16px 40px;
+}
+
+/* ── App container ──────────────────────────────── */
+#app {
+  width: 100%;
+  max-width: 540px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 16px;
+  padding: 28px 20px 36px;
+}
+
+/* ── Header ─────────────────────────────────────── */
+header {
+  text-align: center;
+}
+
+header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--text);
+}
+
+#description {
+  margin-top: 6px;
+  font-size: 1rem;
+  color: var(--text);
+  white-space: pre-line;
+}
+
+/* ── Error message ──────────────────────────────── */
+#error-message {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  text-align: center;
+  width: 100%;
+}
+
+/* ── Pyramid ────────────────────────────────────── */
+#pyramid {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap);
+}
+
+/* ── Pyramid rows ───────────────────────────────── */
+.pyramid-row {
+  display: flex;
+  justify-content: center;
+  gap: var(--gap);
+  width: 100%;
+}
+
+/* Empty unsolved row keeps its height */
+.pyramid-row.empty-row {
+  min-height: 48px;
+}
+
+/* ── Word tiles ──────────────────────────────────── */
+.tile {
+  height: 48px;
+  width: var(--tile-w);
+  padding: 4px 6px;
+  background: var(--tile-bg);
+  color: var(--text);
+  border: 2px solid var(--muted);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-align: center;
+  word-break: break-word;
+  hyphens: auto;
+  transition: background 0.1s, color 0.1s, border-color 0.1s, transform 0.1s;
+  flex-shrink: 0;
+}
+
+.tile:hover:not(:disabled) {
+  border-color: #888;
+  transform: translateY(-1px);
+}
+
+.tile.selected {
+  background: var(--tile-selected-bg);
+  color: var(--tile-selected-text);
+  border-color: var(--tile-selected-bg);
+}
+
+.tile:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+/* ── Solved row ──────────────────────────────────── */
+.pyramid-row.solved-row {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60px;
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  gap: 4px;
+  animation: solvedIn 0.3s ease-out;
+}
+
+/* Each solved row is exactly as wide as its N unsolved tiles would be */
+.pyramid-row[data-size="1"].solved-row { width: calc(1 * var(--tile-w)); }
+.pyramid-row[data-size="2"].solved-row { width: calc(2 * var(--tile-w) + 1 * var(--gap)); }
+.pyramid-row[data-size="3"].solved-row { width: calc(3 * var(--tile-w) + 2 * var(--gap)); }
+.pyramid-row[data-size="4"].solved-row { width: calc(4 * var(--tile-w) + 3 * var(--gap)); }
+.pyramid-row[data-size="5"].solved-row { width: calc(5 * var(--tile-w) + 4 * var(--gap)); }
+
+.solved-category {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.75;
+}
+
+.solved-words {
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* ── Controls ────────────────────────────────────── */
+#controls {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ── Hint message ────────────────────────────────── */
+#hint-message {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #c05621;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 6px;
+  padding: 6px 16px;
+}
+
+/* ── Mistake hearts ──────────────────────────────── */
+#mistakes {
+  display: flex;
+  gap: 8px;
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+/* ── Submit button ───────────────────────────────── */
+#submit-btn {
+  height: 48px;
+  padding: 0 32px;
+  background: #1a1a2e;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+#submit-btn:hover:not(:disabled) {
+  background: #2e2e4e;
+}
+
+#submit-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* ── End message ─────────────────────────────────── */
+#end-message {
+  font-size: 1.5rem;
+  font-weight: 800;
+  text-align: center;
+  padding: 16px;
+}
+
+/* ── Emoji particles ─────────────────────────────── */
+.emoji-particle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 1000;
+  user-select: none;
+  animation: emojifly 2s ease-out forwards;
+}
+
+.confetti-particle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 1000;
+  user-select: none;
+  animation: emojifly 3s ease-out forwards;
+}
+
+@keyframes emojifly {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1);    opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(0.4); opacity: 0; }
+}
+
+/* ── Animations ──────────────────────────────────── */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  15%       { transform: translateX(-6px); }
+  30%       { transform: translateX(6px); }
+  45%       { transform: translateX(-4px); }
+  60%       { transform: translateX(4px); }
+  75%       { transform: translateX(-2px); }
+  90%       { transform: translateX(2px); }
+}
+
+@keyframes solving {
+  0%   { transform: scale(1);    opacity: 1; background: var(--tile-selected-bg); }
+  50%  { transform: scale(1.1);  opacity: 0.8; background: #4ade80; border-color: #4ade80; }
+  100% { transform: scale(1.05); opacity: 0; }
+}
+
+@keyframes solvedIn {
+  from { opacity: 0; transform: scaleY(0.85); }
+  to   { opacity: 1; transform: scaleY(1); }
+}
+
+@keyframes heartLost {
+  0%   { transform: scale(1.5); }
+  50%  { transform: scale(0.7); }
+  100% { transform: scale(1); }
+}
+
+.heart-lost {
+  animation: heartLost 0.4s ease-out;
+}
+
+.tile.shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+.tile.solving {
+  animation: solving 0.4s ease-out forwards;
+  pointer-events: none;
+  color: transparent;
+}
+
+/* ── Me photo banner ─────────────────────────────── */
+#me-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: var(--radius);
+  display: block;
+}
